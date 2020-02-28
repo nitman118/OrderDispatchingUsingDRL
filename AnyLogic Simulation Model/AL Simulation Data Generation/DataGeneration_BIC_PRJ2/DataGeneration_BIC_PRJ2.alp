@@ -286,7 +286,7 @@
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[// format ->createTenant(width, height, tenantID, x, y);
+					<Action><![CDATA[// format ->createTenant(width, height, tenantID, x, y);//in meters
 
 createTenant(500, 500, 0, 0, 0); // tenant 1
 createTenant(500, 500, 1, 500, 0); // tenant 2
@@ -336,7 +336,7 @@ tripFile.println(
 					<Body><![CDATA[Tenant tenant=new Tenant(width, height, tenantID,x,y, this.dispatcher);
 tenant.setPos(width, height);
 tenant.goToPopulation(tenants);
-tenant.setXY(toPixels(x,METER),toPixels(y,METER));]]></Body>
+tenant.setXY(this.toPixels(x,METER),this.toPixels(y,METER));]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -368,7 +368,15 @@ tenant.setXY(toPixels(x,METER),toPixels(y,METER));]]></Body>
 						<Name><![CDATA[task]]></Name>
 						<Type><![CDATA[Task]]></Type>
 					</Parameter>
-					<Body><![CDATA[task.setXY(task.source_loc_x, task.source_loc_y);]]></Body>
+					<Parameter>
+						<Name><![CDATA[loc_x]]></Name>
+						<Type><![CDATA[double]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[loc_y]]></Name>
+						<Type><![CDATA[double]]></Type>
+					</Parameter>
+					<Body><![CDATA[task.setXY(toPixels(loc_x,METER), toPixels(loc_y,METER));]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -395,22 +403,6 @@ tripFile.println(
 				+ task.tenant_id + ","
 				+ task.var_info_task_start_x + ","
 				+ task.var_info_task_start_y);]]></Body>
-				</Function>
-				<Function AccessType="default" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[double]]></ReturnType>
-					<Id>1582022164979</Id>
-					<Name><![CDATA[setHotspotPos]]></Name>
-					<X>-100</X><Y>220</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Parameter>
-						<Name><![CDATA[hotspot]]></Name>
-						<Type><![CDATA[Hotspot]]></Type>
-					</Parameter>
-					<Body><![CDATA[hotspot.setXY(hotspot.x, hotspot.y);]]></Body>
 				</Function>
 			</Functions>
 			<Connectivity>
@@ -823,7 +815,7 @@ tripFile.println(
 				<EmbeddedObjectPresentation>
 					<Id>1580911102800</Id>
 					<Name><![CDATA[tenants_presentation]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>30</X><Y>20</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -879,6 +871,28 @@ tripFile.println(
 					<Latitude>0.0</Latitude>
 					<Longitude>0.0</Longitude>
 				</EmbeddedObjectPresentation>
+				<Rectangle>
+					<Id>1582920718253</Id>
+					<Name><![CDATA[rectangle]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>10</LineWidth>
+					<LineColor>-14774017</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>1000</Width>
+					<Height>1000</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor/>
+					<FillMaterial>null</FillMaterial>
+				</Rectangle>
 			</Presentation>
 
 				</Level>
@@ -1459,12 +1473,12 @@ task.var_state_agv_time = time(MINUTE);
 				<PresentationFlag>false</PresentationFlag>
 				<ShowLabel>false</ShowLabel>
 				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-				<Length>100</Length>
+				<Length>430</Length>
 				<Rotation>0</Rotation>
-				<ScaleType>BASED_ON_LENGTH</ScaleType>
+				<ScaleType>EXPLICITLY_DEFINED</ScaleType>
 				<ModelLength>10</ModelLength>
 				<LengthUnits>METER</LengthUnits>
-				<Scale>10</Scale>
+				<Scale>1</Scale>
 				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
 			</ScaleRuler>
 			<CurrentLevel>1580909541362</CurrentLevel>
@@ -1781,7 +1795,7 @@ Task task = new Task(src_loc_x, dest_loc_x, this.tenantID,
 task.oval.setFillColor(taskColor);
 // Add task to population
 task.goToPopulation(main.tasks);
-main.setTaskPosition(task);// check why population property is not working
+main.setTaskPosition(task, task.source_loc_x, task.source_loc_y);// check why population property is not working
 // Inform Dispatcher
 this.DISPATCHER.addNewTask(task);
 
@@ -1804,6 +1818,22 @@ double dest_loc_y= main.toPixels(this.y + Math.random()*height, METER);
 //create task
 
 createTask(src_loc_x, src_loc_y, dest_loc_x, dest_loc_y);]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1582920991147</Id>
+					<Name><![CDATA[setHotspotPos]]></Name>
+					<X>-100</X><Y>320</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[hotspot]]></Name>
+						<Type><![CDATA[Hotspot]]></Type>
+					</Parameter>
+					<Body><![CDATA[hotspot.setXY(this.toPixels(hotspot.x-this.x, METER), this.toPixels(hotspot.y-this.y, METER));]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -1928,20 +1958,6 @@ createTask(src_loc_x, src_loc_y, dest_loc_x, dest_loc_y);]]></Body>
 					<LevelVisibility>DIM_NON_CURRENT</LevelVisibility>
 
 			<Presentation>
-				<Group>
-					<Id>1580912086686</Id>
-					<Name><![CDATA[group]]></Name>
-					<X>-40</X><Y>-30</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-
-			<Presentation>
 				<Rectangle>
 					<Id>1580909560079</Id>
 					<Name><![CDATA[boundary]]></Name>
@@ -1964,13 +1980,10 @@ createTask(src_loc_x, src_loc_y, dest_loc_x, dest_loc_y);]]></Body>
 					<FillColor>-10496</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
-			</Presentation>
-
-				</Group>
 				<EmbeddedObjectPresentation>
 					<Id>1581516749031</Id>
 					<Name><![CDATA[hotspot_presentation]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>0</X><Y>70</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1980,7 +1993,7 @@ createTask(src_loc_x, src_loc_y, dest_loc_x, dest_loc_y);]]></Body>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<DrawingMode>AGENT_CURRENT_POSITION</DrawingMode>
-					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
+					<ScaleType>DEFINED_EXPLICITLY</ScaleType>
 					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
 					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
 					<Latitude>0.0</Latitude>
@@ -2081,7 +2094,7 @@ createTask(src_loc_x, src_loc_y, dest_loc_x, dest_loc_y);]]></Body>
 				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 				<Length>100</Length>
 				<Rotation>0</Rotation>
-				<ScaleType>BASED_ON_LENGTH</ScaleType>
+				<ScaleType>EXPLICITLY_DEFINED</ScaleType>
 				<ModelLength>10</ModelLength>
 				<LengthUnits>METER</LengthUnits>
 				<Scale>10</Scale>
@@ -2419,6 +2432,7 @@ main.remove_tasks(this);]]></Action>
 					</Points>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1581412657921" Target="1581412657923" Trigger="message">
+						<Action><![CDATA[main.setTaskPosition(this, this.dest_loc_x, this.dest_loc_y);]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
@@ -2626,7 +2640,7 @@ var_info_task_start_y = main.toLengthUnits(source_loc_y, METER);]]></Body>
 					<Name><![CDATA[text1]]></Name>
 					<X>410</X><Y>430</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
+					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
@@ -3675,10 +3689,10 @@ else
 				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 				<Length>100</Length>
 				<Rotation>0</Rotation>
-				<ScaleType>BASED_ON_LENGTH</ScaleType>
+				<ScaleType>EXPLICITLY_DEFINED</ScaleType>
 				<ModelLength>10</ModelLength>
 				<LengthUnits>METER</LengthUnits>
-				<Scale>10</Scale>
+				<Scale>1</Scale>
 				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
 			</ScaleRuler>
 			<CurrentLevel>1581516600386</CurrentLevel>
@@ -3719,6 +3733,7 @@ else
 				<Variable Class="PlainVariable">
 					<Id>1581516704382</Id>
 					<Name><![CDATA[x]]></Name>
+					<Description><![CDATA[this is x in main canvas not relative to tenant in which hotspot lives]]></Description>
 					<X>50</X><Y>140</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -3814,7 +3829,7 @@ else
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[100]]></Code>
+							<Code><![CDATA[10000]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1581518660376</Id>
@@ -3860,7 +3875,7 @@ else
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
-						<EntryAction><![CDATA[demand.reset();
+						<EntryAction><![CDATA[demand.reset();// deactivates demand event
 this.boundary.setFillColor(lightSkyBlue);]]></EntryAction>
 						<FillColor/>
 					</Properties>
@@ -3874,7 +3889,8 @@ this.boundary.setFillColor(lightSkyBlue);]]></EntryAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="60">
-						<EntryAction><![CDATA[this.boundary.setFillColor(gold);]]></EntryAction>
+						<EntryAction><![CDATA[this.boundary.setFillColor(gold);
+demand.restart();//restarts demand event]]></EntryAction>
 						<FillColor/>
 					</Properties>
 				</StatechartElement>
@@ -3952,7 +3968,6 @@ this.boundary.setFillColor(lightSkyBlue);]]></EntryAction>
 					</Points>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1582023414472" Target="1582023444659" Trigger="message">
-						<Action><![CDATA[demand.restart();]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
@@ -4092,8 +4107,12 @@ this.boundary.setFillColor(lightSkyBlue);]]></EntryAction>
 					</Properties>
 					<Action><![CDATA[double src_loc_x= main.toPixels(this.x + Math.random()*width, METER);
 double src_loc_y= main.toPixels(this.y + Math.random()*height, METER);
-double dest_loc_x= main.toPixels(this.x + Math.random()*width, METER);
-double dest_loc_y= main.toPixels(this.y + Math.random()*height, METER);
+//double dest_loc_x= main.toPixels(this.x + Math.random()*width, METER);
+//double dest_loc_y= main.toPixels(this.y + Math.random()*height, METER);
+double dest_loc_x= main.toPixels(get_Tenant().x + Math.random()*get_Tenant().width, METER);
+double dest_loc_y= main.toPixels(get_Tenant().y + Math.random()*get_Tenant().height, METER);
+
+//traceln("tenant:"+get_Tenant().tenantID+", srcx:"+src_loc_x+", srcy:"+src_loc_y+", destx:"+dest_loc_x+", desty"+dest_loc_y);
 //create task
 
 get_Tenant().createTask(src_loc_x, src_loc_y, dest_loc_x, dest_loc_y);]]></Action>
@@ -4128,7 +4147,7 @@ get_Tenant().createTask(src_loc_x, src_loc_y, dest_loc_x, dest_loc_y);]]></Actio
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
 					<Action><![CDATA[setPos(width, height); //adjust width and height
-main.setHotspotPos(this);// position the HS
+get_Tenant().setHotspotPos(this);// position the HS
 create_send_message_to_self(toModelTime(temporal_hotspot_start_time, MINUTE), HS_MESSAGES.HOT);]]></Action>
 				</Event>
 			</Events>
@@ -4269,7 +4288,7 @@ this.boundary.setHeight(toPixels(height, METER));
 				<Rectangle>
 					<Id>1581517280745</Id>
 					<Name><![CDATA[boundary]]></Name>
-					<X>-40</X><Y>-30</Y>
+					<X>0</X><Y>0</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4280,7 +4299,7 @@ this.boundary.setHeight(toPixels(height, METER));
 					<Z>0</Z>
 					<ZHeight>0.5</ZHeight>
 					<LineWidth>4</LineWidth>
-					<LineColor>-16777216</LineColor>
+					<LineColor>-65536</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
 					<Width>80</Width>
@@ -4297,7 +4316,7 @@ this.boundary.setHeight(toPixels(height, METER));
 				<Area>
 					<Id>1582023800951</Id>
 					<Name><![CDATA[va_HS]]></Name>
-					<X>-90</X><Y>-80</Y>
+					<X>0</X><Y>0</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4420,8 +4439,8 @@ this.boundary.setHeight(toPixels(height, METER));
 				<StopOption><![CDATA[Stop at specified date]]></StopOption>
 				<InitialDate><![CDATA[1580860800000]]></InitialDate>	
 				<InitialTime><![CDATA[0.0]]></InitialTime>	
-				<FinalDate><![CDATA[1581033600000]]></FinalDate>	
-				<FinalTime><![CDATA[172800.0]]></FinalTime>	
+				<FinalDate><![CDATA[1581724800000]]></FinalDate>	
+				<FinalTime><![CDATA[864000.0]]></FinalTime>	
 			</ModelTimeProperties>
 		</SimulationExperiment>
 		<!--   =========   Simulation Experiment   ========  -->
