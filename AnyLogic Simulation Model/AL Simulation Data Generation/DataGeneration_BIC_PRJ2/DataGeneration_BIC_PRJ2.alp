@@ -4,7 +4,7 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.5.2.202001241833" AlpVersion="8.5.1">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.5.2.202001241844" AlpVersion="8.5.1">
 <Model>
 	<Id>1580896488345</Id>
 	<Name><![CDATA[DataGeneration_BIC_PRJ2]]></Name>
@@ -471,12 +471,21 @@ tripFile.println(
 					<Parameters>
 						<Parameter>
 							<Name><![CDATA[id]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[index]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[x]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[Math.random()*BIC_WIDTH]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[y]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[Math.random()*BIC_HEIGHT]]></Code>
+							</Value>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>true</ReplicationFlag>
@@ -489,12 +498,12 @@ tripFile.println(
 						<Code><![CDATA[5]]></Code>
 						<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
 					</InitialSpeedCode>
-					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<InitialLocationType>XYZ</InitialLocationType>
 					<XCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
+						<Code><![CDATA[item.x]]></Code>
 					</XCode>
 					<YCode Class="CodeValue">
-						<Code><![CDATA[0]]></Code>
+						<Code><![CDATA[item.y]]></Code>
 					</YCode>
 					<ZCode Class="CodeValue">
 						<Code><![CDATA[0]]></Code>
@@ -514,54 +523,14 @@ tripFile.println(
 					<LocationNameCode Class="CodeValue">
 						<Code><![CDATA[""]]></Code>
 					</LocationNameCode>
-					<InitializationType>LOAD_FROM_DATABASE</InitializationType>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
 					<InitializationDatabaseTableQuery>
 						<TableReference>
-							<PackageName><![CDATA[datageneration_bic_prj1]]></PackageName>
-							<ClassName><![CDATA[db_agv]]></ClassName>
 						</TableReference>
 					</InitializationDatabaseTableQuery>
 					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
 					<QuantityColumn>
 					</QuantityColumn>
-					<ParameterToDatabaseColumnMapping>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[datageneration_bic_prj1]]></PackageName>
-								<ClassName><![CDATA[AGV]]></ClassName>
-								<ItemName><![CDATA[id]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[datageneration_bic_prj1]]></PackageName>
-								<ClassName><![CDATA[db_agv]]></ClassName>
-								<ItemName><![CDATA[agvid]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[datageneration_bic_prj1]]></PackageName>
-								<ClassName><![CDATA[AGV]]></ClassName>
-								<ItemName><![CDATA[x]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[datageneration_bic_prj1]]></PackageName>
-								<ClassName><![CDATA[db_agv]]></ClassName>
-								<ItemName><![CDATA[start_x]]></ItemName>
-							</Value>
-						</Item>
-						<Item>
-							<Key>
-								<PackageName><![CDATA[datageneration_bic_prj1]]></PackageName>
-								<ClassName><![CDATA[AGV]]></ClassName>
-								<ItemName><![CDATA[y]]></ItemName>
-							</Key>
-							<Value>
-								<PackageName><![CDATA[datageneration_bic_prj1]]></PackageName>
-								<ClassName><![CDATA[db_agv]]></ClassName>
-								<ItemName><![CDATA[start_y]]></ItemName>
-							</Value>
-						</Item>	
-					</ParameterToDatabaseColumnMapping>
 				</EmbeddedObject>
 				<EmbeddedObject>
 					<Id>1580911101256</Id>
